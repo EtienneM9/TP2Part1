@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/purple_700"
+    android:padding="16dp"
+    tools:context=".FlashControlActivity">
+
+    <ImageView
+        android:id="@+id/flashStatusImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/flash_off" />
+
+    <TextView
+        android:id="@+id/flashStatusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/black"
+        android:text="Flash: Off"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/button_text_color"
+        android:text="Secouez pour allumer et éteindre le flash"
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+</LinearLayout>

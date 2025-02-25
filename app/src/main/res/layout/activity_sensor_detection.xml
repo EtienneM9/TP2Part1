@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/purple_700"
+    android:padding="16dp"
+    android:gravity="center"
+    tools:context=".SensorDetectionActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Detection"
+        android:background="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:padding="8dp"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/sensorStatusTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginTop="16dp"
+        android:text="Checking for sensors..."
+        android:textColor="@color/black"
+        android:padding="8dp"
+        android:gravity="center" />
+</LinearLayout>

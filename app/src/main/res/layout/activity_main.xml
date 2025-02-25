@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@color/purple_700"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/locationTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location: Loading..."
+        android:textColor="@color/purple_200"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <fragment
+        android:id="@+id/mapView"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/locationTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/buttonsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mapView">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sensorListButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Liste des capteurs"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@color/white"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sensorDetectionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Capteurs hors services"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@color/button_text_color"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/proximityButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Capteur de proximité"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@color/button_text_color"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/directionButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Orientation du téléphone"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@color/button_text_color"
+             />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/accelerometerColorButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Accélérometre"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@color/button_text_color"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/flashControlButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="contrôle du flash"
+            android:backgroundTint="@color/purple_200"
+            android:textColor="@color/button_text_color"
+            />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

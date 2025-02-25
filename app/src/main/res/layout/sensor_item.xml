@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/purple_500"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/sensorName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Name"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/sensorType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Type" />
+
+    <TextView
+        android:id="@+id/sensorVendor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Vendor" />
+
+    <TextView
+        android:id="@+id/sensorVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Version" />
+
+    <TextView
+        android:id="@+id/sensorResolution"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Resolution" />
+
+    <TextView
+        android:id="@+id/sensorPower"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Power" />
+
+    <TextView
+        android:id="@+id/sensorMaximumRange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Maximum Range" />
+
+    <TextView
+        android:id="@+id/sensorMinDelay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sensor Minimum Delay" />
+</LinearLayout>
