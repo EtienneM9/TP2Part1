@@ -1,6 +1,5 @@
 package com.example.tp2part1
 
-
 import android.Manifest
 import android.content.Context
 import android.content.Intent
@@ -13,34 +12,36 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.util.Locale
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import java.util.Locale
+import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraManager
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.MarkerOptions
 
-class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
-    OnMapReadyCallback {
+class MainActivity : AppCompatActivity(), SensorEventListener, OnMapReadyCallback {
 
     private lateinit var sensorListButton: Button
     private lateinit var sensorDetectionButton: Button
     private lateinit var proximityButton: Button
     private lateinit var directionButton: Button
     private lateinit var locationTextView: TextView
-    private lateinit var locationManager: LocationManager
     private lateinit var sensorManager: SensorManager
     private var accelerometer: Sensor? = null
     private var isFlashOn = false
@@ -51,7 +52,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
     private lateinit var accelerometerColorButton: Button
     private lateinit var flashbtn: Button
     private lateinit var map: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
     private var currentLocation: Location? = null
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
         private const val MIN_TIME_BW_UPDATES = 1000L // 1 second
@@ -60,7 +64,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
         sensorListButton = findViewById(R.id.sensorListButton)
@@ -69,11 +72,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
         directionButton = findViewById(R.id.directionButton)
         locationTextView = findViewById(R.id.locationTextView)
         accelerometerColorButton = findViewById(R.id.accelerometerColorButton)
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         cameraManager = getSystemService(Context.CAMERA_SERVICE) as CameraManager
         flashbtn = findViewById(R.id.flashControlButton)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
         try {
             cameraId = cameraManager.cameraIdList[0]
         } catch (e: CameraAccessException) {
@@ -108,23 +112,20 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
             startActivity(Intent(this, FlashControlActivity::class.java))
         }
 
-
         val mapFragment = supportFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment
         mapFragment.getMapAsync(this)
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        requestLocationPermissions()
-        currentLocation?.let {
-            updateMapLocation(it)
-        }
+        enableUserLocation()
+        startLocationUpdates()
     }
 
     private fun requestLocationPermissions() {
         if (ContextCompat.checkSelfPermission(
-                this,Manifest.permission.ACCESS_FINE_LOCATION
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
@@ -143,19 +144,29 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                MIN_TIME_BW_UPDATES,
-                MIN_DISTANCE_CHANGE_FOR_UPDATES,
-                this
+            val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, MIN_TIME_BW_UPDATES).build()
+
+            locationCallback = object : LocationCallback() {
+                override fun onLocationResult(locationResult: LocationResult) {
+                    locationResult.lastLocation?.let { location ->
+                        currentLocation = location
+                        updateMapLocation(location)
+                        updateLocationText(location)
+                    }
+                }
+            }
+
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                null
             )
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<out String>,
+                                            grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
@@ -176,9 +187,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
         }
     }
 
-
-    override fun onLocationChanged(location: Location) {
-        currentLocation = location
+    private fun updateLocationText(location: Location) {
         val geocoder = Geocoder(this, Locale.getDefault())
         val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
         if (addresses != null && addresses.isNotEmpty()) {
@@ -186,7 +195,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
             val locationText = "Location: ${address.locality}, ${address.countryName}"
             locationTextView.text = locationText
         }
-        updateMapLocation(location)
     }
 
     private fun updateMapLocation(location: Location) {
@@ -205,6 +213,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
     override fun onPause() {
         super.onPause()
         sensorManager.unregisterListener(this)
+        stopLocationUpdates()
     }
 
     override fun onSensorChanged(event: SensorEvent) {
@@ -233,9 +242,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
         // Not needed for this example
-    }
-
-    private fun toggleFlash() {
+    }private fun toggleFlash() {
         try {
             if (cameraId != null) {
                 isFlashOn = !isFlashOn
@@ -244,6 +251,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener, LocationListener,
         } catch (e: CameraAccessException) {
             e.printStackTrace()
         }
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
     private var lastX: Float = 0f
